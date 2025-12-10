@@ -6,16 +6,34 @@ class QrCodeGenerator {
   static String generate(KeqrPayload payload) {
     var parts = <String>[];
 
+    // Mandatory fields
     parts.add(_tlv('00', payload.payloadFormatIndicator));
     parts.add(_tlv('01', payload.pointOfInitiationMethod));
-    parts.add(_tlv('52', payload.merchantCategoryCode));
     parts.add(_tlv('53', payload.transactionCurrency));
+    parts.add(_tlv('58', payload.countryCode));
+    parts.add(_tlv('59', payload.merchantName));
+
+    // Optional fields
+    if (payload.merchantCategoryCode != null) {
+      parts.add(_tlv('52', payload.merchantCategoryCode!));
+    }
     if (payload.transactionAmount != null) {
       parts.add(_tlv('54', payload.transactionAmount!));
     }
-    parts.add(_tlv('58', payload.countryCode));
-    parts.add(_tlv('59', payload.merchantName));
-    parts.add(_tlv('60', payload.merchantCity));
+    if (payload.merchantCity != null) {
+      parts.add(_tlv('60', payload.merchantCity!));
+    }
+
+    // Mandatory fields that are not in KeqrPayload constructor
+    if (payload.merchantUssdDisplayedCode == null) {
+      throw ArgumentError('Merchant USSD Displayed Code (Tag 81) is mandatory.');
+    }
+    parts.add(_tlv('81', payload.merchantUssdDisplayedCode!));
+
+    if (payload.qrTimestampInformation == null) {
+      throw ArgumentError('QR Timestamp Information (Tag 82) is mandatory.');
+    }
+    parts.add(_tlv('82', payload.qrTimestampInformation!));
 
     if (payload.additionalData != null) {
       var additionalDataParts = <String>[];
