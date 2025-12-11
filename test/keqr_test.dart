@@ -7,12 +7,33 @@ void main() {
       final payload = KeqrPayload(
         payloadFormatIndicator: '01',
         pointOfInitiationMethod: '12',
+        merchantAccountInformation: [
+          MerchantAccountInformation(
+            fieldId: '28',
+            globallyUniqueIdentifier: 'com.testpsp.payments',
+            paymentNetworkSpecificData: {
+              '01': 'MERCHANT123456',
+            },
+          ),
+        ],
         merchantCategoryCode: '4111',
-        transactionCurrency: '356',
+        transactionCurrency: '404',
         transactionAmount: '100.00',
         countryCode: 'KE',
         merchantName: 'Awesome Merchant',
         merchantCity: 'Nairobi',
+        merchantUssdInformation: MerchantUssdInformation(
+          globallyUniqueIdentifier: 'com.testpsp.ussd',
+          paymentNetworkSpecificData: {
+            '01': '*123#',
+          },
+        ),
+        qrTimestampInformation: QrTimestampInformation(
+          globallyUniqueIdentifier: 'com.testpsp.timestamp',
+          timestampData: {
+            '01': '20231215120000',
+          },
+        ),
         additionalData: AdditionalData(
           billNumber: '12345',
           purposeOfTransaction: 'Test Transaction',
@@ -29,12 +50,33 @@ void main() {
 
       expect(parsedPayload.payloadFormatIndicator, payload.payloadFormatIndicator);
       expect(parsedPayload.pointOfInitiationMethod, payload.pointOfInitiationMethod);
+
+      // Verify merchant account information
+      expect(parsedPayload.merchantAccountInformation.length, 1);
+      expect(parsedPayload.merchantAccountInformation[0].fieldId, '28');
+      expect(parsedPayload.merchantAccountInformation[0].globallyUniqueIdentifier, 'com.testpsp.payments');
+      expect(parsedPayload.merchantAccountInformation[0].paymentNetworkSpecificData['01'], 'MERCHANT123456');
+      expect(parsedPayload.merchantAccountInformation[0].isPspAccount, true);
+
       expect(parsedPayload.merchantCategoryCode, payload.merchantCategoryCode);
       expect(parsedPayload.transactionCurrency, payload.transactionCurrency);
       expect(parsedPayload.transactionAmount, payload.transactionAmount);
       expect(parsedPayload.countryCode, payload.countryCode);
       expect(parsedPayload.merchantName, payload.merchantName);
       expect(parsedPayload.merchantCity, payload.merchantCity);
+
+      // Verify nested USSD information
+      expect(parsedPayload.merchantUssdInformation?.globallyUniqueIdentifier,
+          payload.merchantUssdInformation?.globallyUniqueIdentifier);
+      expect(parsedPayload.merchantUssdInformation?.paymentNetworkSpecificData['01'],
+          payload.merchantUssdInformation?.paymentNetworkSpecificData['01']);
+
+      // Verify nested timestamp information
+      expect(parsedPayload.qrTimestampInformation?.globallyUniqueIdentifier,
+          payload.qrTimestampInformation?.globallyUniqueIdentifier);
+      expect(parsedPayload.qrTimestampInformation?.timestampData['01'],
+          payload.qrTimestampInformation?.timestampData['01']);
+
       expect(parsedPayload.additionalData?.billNumber, payload.additionalData?.billNumber);
       expect(parsedPayload.additionalData?.purposeOfTransaction, payload.additionalData?.purposeOfTransaction);
       expect(parsedPayload.merchantInformationLanguageTemplate?.languagePreference,

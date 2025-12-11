@@ -17,8 +17,49 @@ void main() {
     print('  Country Code: ${parsedPayload.countryCode}');
     print('  Merchant Name: ${parsedPayload.merchantName}');
     print('  Merchant City: ${parsedPayload.merchantCity ?? "N/A"}');
-    print('  Merchant USSD Displayed Code: ${parsedPayload.merchantUssdDisplayedCode}');
-    print('  QR Timestamp Information: ${parsedPayload.qrTimestampInformation}');
+
+    // Print Merchant Account Information
+    if (parsedPayload.merchantAccountInformation.isNotEmpty) {
+      print('  Merchant Account Information:');
+      for (var i = 0; i < parsedPayload.merchantAccountInformation.length; i++) {
+        var account = parsedPayload.merchantAccountInformation[i];
+        print('    [${i + 1}] Field ID: ${account.fieldId}');
+        print('        Globally Unique ID: ${account.globallyUniqueIdentifier ?? "N/A"}');
+        if (account.paymentNetworkSpecificData.isNotEmpty) {
+          print('        Payment Network Data: ${account.paymentNetworkSpecificData}');
+        }
+        if (account.isPspAccount) {
+          print('        Type: PSP Merchant Account');
+        } else if (account.isBankWalletAccount) {
+          print('        Type: Bank Wallet Merchant Account');
+        }
+      }
+    }
+
+    // Print Merchant USSD Information (nested)
+    if (parsedPayload.merchantUssdInformation != null) {
+      print('  Merchant USSD Information:');
+      print('    Globally Unique ID: ${parsedPayload.merchantUssdInformation!.globallyUniqueIdentifier ?? "N/A"}');
+      print('    Payment Network Data: ${parsedPayload.merchantUssdInformation!.paymentNetworkSpecificData}');
+    }
+
+    // Print QR Timestamp Information (nested)
+    if (parsedPayload.qrTimestampInformation != null) {
+      print('  QR Timestamp Information:');
+      print('    Globally Unique ID: ${parsedPayload.qrTimestampInformation!.globallyUniqueIdentifier ?? "N/A"}');
+      print('    Timestamp Data: ${parsedPayload.qrTimestampInformation!.timestampData}');
+    }
+
+    // Print Additional Templates (nested)
+    if (parsedPayload.additionalTemplates != null && parsedPayload.additionalTemplates!.isNotEmpty) {
+      print('  Additional Templates:');
+      for (var i = 0; i < parsedPayload.additionalTemplates!.length; i++) {
+        var template = parsedPayload.additionalTemplates![i];
+        print('    [${i + 1}] Field ID: ${template.fieldId}');
+        print('        Globally Unique ID: ${template.globallyUniqueIdentifier ?? "N/A"}');
+        print('        Template Data: ${template.templateData}');
+      }
+    }
 
     if (parsedPayload.additionalData != null) {
       print('  Additional Data:');
@@ -41,14 +82,33 @@ void main() {
   var payloadToGenerate = KeqrPayload(
     payloadFormatIndicator: '01',
     pointOfInitiationMethod: '12', // '11' for static, '12' for dynamic
+    merchantAccountInformation: [
+      MerchantAccountInformation(
+        fieldId: '28', // PSP merchant account identifier
+        globallyUniqueIdentifier: 'com.examplepsp.payments',
+        paymentNetworkSpecificData: {
+          '01': 'MERCHANT789012', // Payment network specific merchant ID
+        },
+      ),
+    ],
     merchantCategoryCode: '4111', // Transportation (Optional now)
-    transactionCurrency: '356', // Kenyan Shilling
+    transactionCurrency: '404', // Kenyan Shilling (ISO 4217 code)
     transactionAmount: '100.00', // Conditional
     countryCode: 'KE',
     merchantName: 'Generated Merchant',
     merchantCity: 'Nairobi', // Optional now
-    merchantUssdDisplayedCode: '123456', // Mandatory
-    qrTimestampInformation: '20231210103000', // Mandatory
+    merchantUssdInformation: MerchantUssdInformation(
+      globallyUniqueIdentifier: 'com.examplepsp.ussd',
+      paymentNetworkSpecificData: {
+        '01': '*123#',
+      },
+    ),
+    qrTimestampInformation: QrTimestampInformation(
+      globallyUniqueIdentifier: 'com.examplepsp.timestamp',
+      timestampData: {
+        '01': '20231210103000',
+      },
+    ),
     additionalData: AdditionalData(
       billNumber: 'BILL123',
       purposeOfTransaction: 'Payment',
@@ -65,7 +125,16 @@ void main() {
     print('\nSuccessfully parsed GENERATED QR Code String:');
     print('  Merchant Name: ${parsedGeneratedPayload.merchantName}');
     print('  Transaction Amount: ${parsedGeneratedPayload.transactionAmount}');
-    print('  Merchant USSD Displayed Code: ${parsedGeneratedPayload.merchantUssdDisplayedCode}');
+    if (parsedGeneratedPayload.merchantUssdInformation != null) {
+      print('  Merchant USSD Information:');
+      print('    Globally Unique ID: ${parsedGeneratedPayload.merchantUssdInformation!.globallyUniqueIdentifier}');
+      print('    USSD Code: ${parsedGeneratedPayload.merchantUssdInformation!.paymentNetworkSpecificData['01']}');
+    }
+    if (parsedGeneratedPayload.qrTimestampInformation != null) {
+      print('  QR Timestamp Information:');
+      print('    Globally Unique ID: ${parsedGeneratedPayload.qrTimestampInformation!.globallyUniqueIdentifier}');
+      print('    Timestamp: ${parsedGeneratedPayload.qrTimestampInformation!.timestampData['01']}');
+    }
   } catch (e) {
     print('\nError generating or parsing generated QR code: $e');
   }

@@ -9,6 +9,31 @@ class QrCodeGenerator {
     // Mandatory fields
     parts.add(_tlv('00', payload.payloadFormatIndicator));
     parts.add(_tlv('01', payload.pointOfInitiationMethod));
+
+    // Merchant Account Information (Fields 02-51) - At least one MUST be present
+    if (payload.merchantAccountInformation.isEmpty) {
+      throw ArgumentError(
+        'At least one Merchant Account Information field (02-51) must be present according to KE-QR Standard Table 7.3.',
+      );
+    }
+
+    // Generate TLV for each merchant account information field
+    for (var merchantAccount in payload.merchantAccountInformation) {
+      var merchantAccountParts = <String>[];
+
+      // Add globally unique identifier (sub-tag 00) if present
+      if (merchantAccount.globallyUniqueIdentifier != null) {
+        merchantAccountParts.add(_tlv('00', merchantAccount.globallyUniqueIdentifier!));
+      }
+
+      // Add payment network specific data (sub-tags 01 and beyond)
+      for (var entry in merchantAccount.paymentNetworkSpecificData.entries) {
+        merchantAccountParts.add(_tlv(entry.key, entry.value));
+      }
+
+      parts.add(_tlv(merchantAccount.fieldId, merchantAccountParts.join()));
+    }
+
     parts.add(_tlv('53', payload.transactionCurrency));
     parts.add(_tlv('58', payload.countryCode));
     parts.add(_tlv('59', payload.merchantName));
@@ -24,16 +49,29 @@ class QrCodeGenerator {
       parts.add(_tlv('60', payload.merchantCity!));
     }
 
-    // Mandatory fields that are not in KeqrPayload constructor
-    if (payload.merchantUssdDisplayedCode == null) {
-      throw ArgumentError('Merchant USSD Displayed Code (Tag 81) is mandatory.');
+    // Field 81: Merchant USSD Information (nested TLV)
+    if (payload.merchantUssdInformation != null) {
+      var ussdParts = <String>[];
+      if (payload.merchantUssdInformation!.globallyUniqueIdentifier != null) {
+        ussdParts.add(_tlv('00', payload.merchantUssdInformation!.globallyUniqueIdentifier!));
+      }
+      for (var entry in payload.merchantUssdInformation!.paymentNetworkSpecificData.entries) {
+        ussdParts.add(_tlv(entry.key, entry.value));
+      }
+      parts.add(_tlv('81', ussdParts.join()));
     }
-    parts.add(_tlv('81', payload.merchantUssdDisplayedCode!));
 
-    if (payload.qrTimestampInformation == null) {
-      throw ArgumentError('QR Timestamp Information (Tag 82) is mandatory.');
+    // Field 82: QR Timestamp Information (nested TLV)
+    if (payload.qrTimestampInformation != null) {
+      var timestampParts = <String>[];
+      if (payload.qrTimestampInformation!.globallyUniqueIdentifier != null) {
+        timestampParts.add(_tlv('00', payload.qrTimestampInformation!.globallyUniqueIdentifier!));
+      }
+      for (var entry in payload.qrTimestampInformation!.timestampData.entries) {
+        timestampParts.add(_tlv(entry.key, entry.value));
+      }
+      parts.add(_tlv('82', timestampParts.join()));
     }
-    parts.add(_tlv('82', payload.qrTimestampInformation!));
 
     if (payload.additionalData != null) {
       var additionalDataParts = <String>[];
@@ -65,6 +103,20 @@ class QrCodeGenerator {
         additionalDataParts.add(_tlv('09', payload.additionalData!.additionalConsumerDataRequest!));
       }
       parts.add(_tlv('62', additionalDataParts.join()));
+    }
+
+    // Fields 83-99: Additional Templates (nested TLV)
+    if (payload.additionalTemplates != null) {
+      for (var template in payload.additionalTemplates!) {
+        var templateParts = <String>[];
+        if (template.globallyUniqueIdentifier != null) {
+          templateParts.add(_tlv('00', template.globallyUniqueIdentifier!));
+        }
+        for (var entry in template.templateData.entries) {
+          templateParts.add(_tlv(entry.key, entry.value));
+        }
+        parts.add(_tlv(template.fieldId, templateParts.join()));
+      }
     }
 
     if (payload.merchantInformationLanguageTemplate != null) {

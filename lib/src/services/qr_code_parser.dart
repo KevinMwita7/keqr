@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'package:crclib/catalog.dart';
 import '../models/additional_data.dart';
 import '../models/keqr_payload.dart';
+import '../models/merchant_account_information.dart';
 import '../models/merchant_information_language_template.dart';
+import '../models/merchant_ussd_information.dart';
+import '../models/qr_timestamp_information.dart';
+import '../models/template_information.dart';
 
 class QrCodeParser {
   static KeqrPayload parse(String qrCode) {
@@ -42,6 +46,30 @@ class QrCodeParser {
     // Check if this is an M-Pesa QR code
     bool isMpesaQr = data.containsKey('83') && data['83']!.contains('m-pesa.com');
 
+    // Parse Merchant Account Information (Fields 02-51)
+    // According to KE-QR Standard Table 7.3, at least one MUST be present
+    var merchantAccountInformation = <MerchantAccountInformation>[];
+    for (var i = 2; i <= 51; i++) {
+      var fieldId = i.toString().padLeft(2, '0');
+      if (data.containsKey(fieldId)) {
+        var merchantAccountData = _parseTlv(data[fieldId]!);
+        merchantAccountInformation.add(
+          MerchantAccountInformation(
+            fieldId: fieldId,
+            globallyUniqueIdentifier: merchantAccountData['00'],
+            paymentNetworkSpecificData: Map.from(merchantAccountData)..remove('00'),
+          ),
+        );
+      }
+    }
+
+    // Validate that at least one merchant account field is present
+    if (merchantAccountInformation.isEmpty) {
+      throw ArgumentError(
+        'At least one Merchant Account Information field (02-51) must be present according to KE-QR Standard Table 7.3.',
+      );
+    }
+
     AdditionalData? additionalData;
     if (data.containsKey('62')) {
       var additionalDataMap = _parseTlv(data['62']!);
@@ -75,32 +103,59 @@ class QrCodeParser {
       );
     }
 
-    // Conditionally check for mandatory fields
-    String? merchantUssdDisplayedCode;
-    if (!isMpesaQr) {
-      merchantUssdDisplayedCode = getRequired('81', 'Merchant USSD Displayed Code');
-    } else {
-      merchantUssdDisplayedCode = data['81'];
+    // Parse Field 81: Merchant USSD Information (nested TLV)
+    MerchantUssdInformation? merchantUssdInformation;
+    if (data.containsKey('81')) {
+      var ussdData = _parseTlv(data['81']!);
+      merchantUssdInformation = MerchantUssdInformation(
+        globallyUniqueIdentifier: ussdData['00'],
+        paymentNetworkSpecificData: Map.from(ussdData)..remove('00'),
+      );
+    } else if (!isMpesaQr) {
+      throw ArgumentError('Merchant USSD Information (Tag 81) is mandatory.');
     }
 
-    String? qrTimestampInformation;
-    if (!isMpesaQr) {
-      qrTimestampInformation = getRequired('82', 'QR Timestamp Information');
-    } else {
-      qrTimestampInformation = data['82'];
+    // Parse Field 82: QR Timestamp Information (nested TLV)
+    QrTimestampInformation? qrTimestampInformation;
+    if (data.containsKey('82')) {
+      var timestampData = _parseTlv(data['82']!);
+      qrTimestampInformation = QrTimestampInformation(
+        globallyUniqueIdentifier: timestampData['00'],
+        timestampData: Map.from(timestampData)..remove('00'),
+      );
+    } else if (!isMpesaQr) {
+      throw ArgumentError('QR Timestamp Information (Tag 82) is mandatory.');
+    }
+
+    // Parse Fields 83-99: Additional Templates (nested TLV)
+    var additionalTemplates = <TemplateInformation>[];
+    for (var i = 83; i <= 99; i++) {
+      var fieldId = i.toString().padLeft(2, '0');
+      if (data.containsKey(fieldId)) {
+        var templateData = _parseTlv(data[fieldId]!);
+        additionalTemplates.add(
+          TemplateInformation(
+            fieldId: fieldId,
+            globallyUniqueIdentifier: templateData['00'],
+            templateData: Map.from(templateData)..remove('00'),
+          ),
+        );
+      }
     }
 
     return KeqrPayload(
       payloadFormatIndicator: getRequired('00', 'Payload Format Indicator'),
       pointOfInitiationMethod: getRequired('01', 'Point of Initiation Method'),
+      merchantAccountInformation: merchantAccountInformation,
       merchantCategoryCode: data['52'], // Optional field
       transactionCurrency: getRequired('53', 'Transaction Currency'),
       transactionAmount: data['54'], // Conditional field
       countryCode: getRequired('58', 'Country Code'),
       merchantName: getRequired('59', 'Merchant Name'),
       merchantCity: data['60'], // Optional field
-      merchantUssdDisplayedCode: merchantUssdDisplayedCode,
+      merchantUssdInformation: merchantUssdInformation,
       qrTimestampInformation: qrTimestampInformation,
+      additionalTemplates: additionalTemplates.isNotEmpty ? additionalTemplates : null,
       additionalData: additionalData,
       merchantInformationLanguageTemplate: merchantInformationLanguageTemplate,
       crc: crcValue,
