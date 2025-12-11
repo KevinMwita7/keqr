@@ -1,39 +1,60 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Keqr: A Dart KE-QR Code Library
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A pure Dart library for generating and parsing KE-QR codes, fully compliant with the **Kenya Quick Response Code Standard 2023** by the Central Bank of Kenya. This package provides an easy way to integrate KE-QR code functionality into your Dart and Flutter applications.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+-   **Generate KE-QR Codes**: Create QR code strings from a `KeqrPayload` object with all necessary fields.
+-   **Parse KE-QR Codes**: Parse a QR code string back into a structured `KeqrPayload` object.
+-   **Standard Compliant**: Follows the official specification for all fields, including:
+    -   Merchant Account Information
+    -   Transaction Details
+    -   Tip or Convenience Fee Indicators
+    -   Additional Data Fields (Bill Number, Customer Label, etc.)
+    -   Merchant Premises Location
+    -   And more.
+-   **Type-Safe**: Uses enums and classes to represent the different parts of the QR code payload, reducing errors.
+-   **CRC Validation**: Automatically calculates and validates the CRC checksum.
+-   **Well-Tested**: Includes a comprehensive round-trip test to ensure serialization and deserialization work correctly.
 
-## Getting started
+## Getting Started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the dependency to your `pubspec.yaml`:
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  keqr: ^1.0.0 # Replace with the latest version
 ```
 
-## Additional information
+Then, import the library:
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+import 'package:keqr/keqr.dart';
+```
+
+### Generating a QR Code
+
+```dart
+void main() {
+  final payload = KeqrPayload(
+    // ... populate your payload data
+  );
+
+  final qrCodeString = QrCodeGenerator.generate(payload);
+  print(qrCodeString);
+}
+```
+
+### Parsing a QR Code
+
+```dart
+void main() {
+  final qrCodeString = '...'; // Your KE-QR code string
+
+  try {
+    final parsedPayload = QrCodeParser.parse(qrCodeString);
+    print('Merchant Name: ${parsedPayload.merchantName}');
+  } catch (e) {
+    print('Error parsing QR code: $e');
+  }
+}
