@@ -108,6 +108,13 @@ void main() {
         },
       )
     ],
+    merchantCity: 'Nairobi',
+    merchantUssdInformation: MerchantUssdInformation(
+      globallyUniqueIdentifier: 'ke.go.qr',
+      paymentNetworkSpecificData: {
+        '00': '*123#'
+      }
+    ),
     transactionAmount: '100.00',
     merchantCategoryCode: '0000', // Transportation (Optional now)
     transactionCurrency: '404', // Kenyan Shilling (ISO 4217 code)
@@ -117,9 +124,14 @@ void main() {
     qrTimestampInformation: QrTimestampInformation(
       globallyUniqueIdentifier: 'ke.go.qr',
       timestampData: {
-        '01': '343122025 041242',
+        '01': '2025-12-11T12:56:36',
       },
     ),
+    // M-PESA doesn't support the merchant premise location. In case it's needed later, include it here
+    /*merchantPremisesLocation: MerchantPremisesLocation(
+      locationDataProvider: LocationDataProvider.gpsCoordinates,
+      locationData: '-1.284680,36.825531'
+    ),*/
     additionalData: AdditionalData(
       referenceLabel: '01',
     ),
