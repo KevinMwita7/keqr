@@ -19,9 +19,7 @@ A pure Dart library for generating and parsing KE-QR codes, fully compliant with
 
 ## Specification
 
-This library is based on the official **Kenya Quick Response Code Standard 2023** issued by the Central Bank of Kenya. You can find the full specification here:
-
-[Kenya Quick Response Code Standard PDF](https://www.centralbank.go.ke/QR/KenyaQuickResponseCodeStandard.pdf)
+This library is based on the official **Kenya Quick Response Code Standard 2023** issued by the Central Bank of Kenya. You can find the full specification here: [Kenya Quick Response Code Standard PDF](https://www.centralbank.go.ke/QR/KenyaQuickResponseCodeStandard.pdf)
 
 ## Getting Started
 
