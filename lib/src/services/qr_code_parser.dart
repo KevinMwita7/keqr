@@ -100,6 +100,8 @@ class QrCodeParser {
         terminalLabel: additionalDataMap['07'],
         purposeOfTransaction: additionalDataMap['08'],
         additionalConsumerDataRequest: additionalDataMap['09'],
+        merchantTaxId: additionalDataMap['10'],
+        merchantChannel: additionalDataMap['11'],
       );
     }
 

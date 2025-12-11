@@ -79,6 +79,10 @@ void main() {
           '    Bill Number: ${parsedPayload.additionalData?.billNumber ?? "N/A"}');
       print(
           '    Purpose of Transaction: ${parsedPayload.additionalData?.purposeOfTransaction ?? "N/A"}');
+      print(
+          '    Merchant Tax ID: ${parsedPayload.additionalData?.merchantTaxId ?? "N/A"}');
+      print(
+          '    Merchant Channel: ${parsedPayload.additionalData?.merchantChannel ?? "N/A"}');
     }
     if (parsedPayload.merchantInformationLanguageTemplate != null) {
       print('  Merchant Information Language Template:');
@@ -119,7 +123,7 @@ void main() {
     merchantCategoryCode: '0000', // Transportation (Optional now)
     transactionCurrency: '404', // Kenyan Shilling (ISO 4217 code)
     countryCode: 'KE',
-    merchantName: 'Faith Chepkirui Kirui',
+    merchantName: '',
     postalCode: '00',
     qrTimestampInformation: QrTimestampInformation(
       globallyUniqueIdentifier: 'ke.go.qr',
@@ -133,7 +137,17 @@ void main() {
       locationData: '-1.284680,36.825531'
     ),*/
     additionalData: AdditionalData(
+      // On M-PESA, 01 represents till numbers, while 04 represents mobile numbers
       referenceLabel: '01',
+      // Merchant Tax ID (Subfield 10) - Kenya IPRS/BRS identifier
+      merchantTaxId: 'A123456789',
+      // Merchant Channel (Subfield 11) - Use helper to build valid channel
+      // '000' = Print sticker at merchant premises, attended
+      merchantChannel: MerchantChannelBuilder.build(
+        MerchantChannelMedia.printSticker,
+        MerchantChannelScanLocation.atMerchantPremises,
+        MerchantChannelPresence.attended,
+      ),
     ),
     additionalTemplates: [
       TemplateInformation(fieldId: '83', templateData: {'01': '02', '03': '00002', '04': '00000'}, globallyUniqueIdentifier: 'm-pesa.com')

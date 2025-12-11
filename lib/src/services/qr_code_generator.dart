@@ -110,6 +110,12 @@ class QrCodeGenerator {
       if (payload.additionalData!.additionalConsumerDataRequest != null) {
         additionalDataParts.add(_tlv('09', payload.additionalData!.additionalConsumerDataRequest!));
       }
+      if (payload.additionalData!.merchantTaxId != null) {
+        additionalDataParts.add(_tlv('10', payload.additionalData!.merchantTaxId!));
+      }
+      if (payload.additionalData!.merchantChannel != null) {
+        additionalDataParts.add(_tlv('11', payload.additionalData!.merchantChannel!));
+      }
       parts.add(_tlv('62', additionalDataParts.join()));
     }
 
