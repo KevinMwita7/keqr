@@ -108,7 +108,7 @@ void main() {
         fieldId: '28', // PSP merchant account identifier
         globallyUniqueIdentifier: 'ke.go.qr',
         paymentNetworkSpecificData: {
-          '01': '4449562', // Payment network specific merchant ID
+          '01': '4449562', // Payment network specific merchant ID. Must be a valid till/phone number
         },
       )
     ],
@@ -123,7 +123,7 @@ void main() {
     merchantCategoryCode: '0000', // Transportation (Optional now)
     transactionCurrency: '404', // Kenyan Shilling (ISO 4217 code)
     countryCode: 'KE',
-    merchantName: '',
+    merchantName: 'Mister Krabs',
     postalCode: '00',
     qrTimestampInformation: QrTimestampInformation(
       globallyUniqueIdentifier: 'ke.go.qr',
