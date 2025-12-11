@@ -5,6 +5,7 @@ import 'merchant_premises_location.dart';
 import 'merchant_ussd_information.dart';
 import 'qr_timestamp_information.dart';
 import 'template_information.dart';
+import 'tip_or_convenience_indicator.dart';
 
 class KeqrPayload {
   final String payloadFormatIndicator;
@@ -17,6 +18,9 @@ class KeqrPayload {
   final String? merchantCategoryCode; // Optional
   final String transactionCurrency;
   final String? transactionAmount; // Conditional
+  final TipOrConvenienceIndicator? tipOrConvenienceIndicator; // Optional
+  final String? convenienceFeeFixed; // Conditional
+  final String? convenienceFeePercentage; // Conditional
   final String countryCode;
   final String merchantName;
   final String? merchantCity; // Optional
@@ -46,6 +50,9 @@ class KeqrPayload {
     this.merchantCategoryCode,
     required this.transactionCurrency,
     this.transactionAmount,
+    this.tipOrConvenienceIndicator,
+    this.convenienceFeeFixed,
+    this.convenienceFeePercentage,
     required this.countryCode,
     required this.merchantName,
     this.merchantCity,

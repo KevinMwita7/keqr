@@ -19,6 +19,8 @@ void main() {
         merchantCategoryCode: '4111',
         transactionCurrency: '404',
         transactionAmount: '100.00',
+        tipOrConvenienceIndicator: TipOrConvenienceIndicator.fixedConvenienceFee,
+        convenienceFeeFixed: '10.00',
         countryCode: 'KE',
         merchantName: 'Awesome Merchant',
         merchantCity: 'Nairobi',
@@ -67,6 +69,8 @@ void main() {
       expect(parsedPayload.merchantCategoryCode, payload.merchantCategoryCode);
       expect(parsedPayload.transactionCurrency, payload.transactionCurrency);
       expect(parsedPayload.transactionAmount, payload.transactionAmount);
+      expect(parsedPayload.tipOrConvenienceIndicator, payload.tipOrConvenienceIndicator);
+      expect(parsedPayload.convenienceFeeFixed, payload.convenienceFeeFixed);
       expect(parsedPayload.countryCode, payload.countryCode);
       expect(parsedPayload.merchantName, payload.merchantName);
       expect(parsedPayload.merchantCity, payload.merchantCity);

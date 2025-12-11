@@ -8,6 +8,7 @@ import '../models/merchant_premises_location.dart';
 import '../models/merchant_ussd_information.dart';
 import '../models/qr_timestamp_information.dart';
 import '../models/template_information.dart';
+import '../models/tip_or_convenience_indicator.dart';
 
 class QrCodeParser {
   static KeqrPayload parse(String qrCode) {
@@ -69,6 +70,21 @@ class QrCodeParser {
       throw ArgumentError(
         'At least one Merchant Account Information field (02-51) must be present according to KE-QR Standard Table 7.3.',
       );
+    }
+
+    TipOrConvenienceIndicator? tipOrConvenienceIndicator;
+    if (data.containsKey('55')) {
+      switch (data['55']) {
+        case '01':
+          tipOrConvenienceIndicator = TipOrConvenienceIndicator.promptToEnterTip;
+          break;
+        case '02':
+          tipOrConvenienceIndicator = TipOrConvenienceIndicator.fixedConvenienceFee;
+          break;
+        case '03':
+          tipOrConvenienceIndicator = TipOrConvenienceIndicator.percentageConvenienceFee;
+          break;
+      }
     }
 
     AdditionalData? additionalData;
@@ -175,6 +191,9 @@ class QrCodeParser {
       merchantCategoryCode: data['52'], // Optional field
       transactionCurrency: getRequired('53', 'Transaction Currency'),
       transactionAmount: data['54'], // Conditional field
+      tipOrConvenienceIndicator: tipOrConvenienceIndicator,
+      convenienceFeeFixed: data['56'],
+      convenienceFeePercentage: data['57'],
       countryCode: getRequired('58', 'Country Code'),
       merchantName: getRequired('59', 'Merchant Name'),
       merchantCity: data['60'], // Optional field

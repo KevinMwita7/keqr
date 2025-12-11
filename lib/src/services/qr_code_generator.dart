@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:crclib/catalog.dart';
 import '../models/keqr_payload.dart';
 import '../models/merchant_premises_location.dart';
+import '../models/tip_or_convenience_indicator.dart';
 
 class QrCodeGenerator {
   static String generate(KeqrPayload payload) {
@@ -43,6 +44,30 @@ class QrCodeGenerator {
 
     if (payload.transactionAmount != null) {
       parts.add(_tlv('54', payload.transactionAmount!));
+    }
+
+    if (payload.tipOrConvenienceIndicator != null) {
+      String indicatorValue;
+      switch (payload.tipOrConvenienceIndicator!) {
+        case TipOrConvenienceIndicator.promptToEnterTip:
+          indicatorValue = '01';
+          parts.add(_tlv('55', indicatorValue));
+          break;
+        case TipOrConvenienceIndicator.fixedConvenienceFee:
+          indicatorValue = '02';
+          parts.add(_tlv('55', indicatorValue));
+          if (payload.convenienceFeeFixed != null) {
+            parts.add(_tlv('56', payload.convenienceFeeFixed!));
+          }
+          break;
+        case TipOrConvenienceIndicator.percentageConvenienceFee:
+          indicatorValue = '03';
+          parts.add(_tlv('55', indicatorValue));
+          if (payload.convenienceFeePercentage != null) {
+            parts.add(_tlv('57', payload.convenienceFeePercentage!));
+          }
+          break;
+      }
     }
 
     parts.add(_tlv('58', payload.countryCode));
