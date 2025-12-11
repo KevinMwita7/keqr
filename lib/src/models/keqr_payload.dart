@@ -20,6 +20,7 @@ class KeqrPayload {
   final String countryCode;
   final String merchantName;
   final String? merchantCity; // Optional
+  final String? postalCode; // Optional
 
   /// Merchant USSD Information (Field 81) - Nested TLV structure
   /// Mandatory in KE-QR Standard
@@ -48,6 +49,7 @@ class KeqrPayload {
     required this.countryCode,
     required this.merchantName,
     this.merchantCity,
+    this.postalCode,
     this.merchantUssdInformation,
     this.qrTimestampInformation,
     this.additionalTemplates,

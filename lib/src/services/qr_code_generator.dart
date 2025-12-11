@@ -49,6 +49,9 @@ class QrCodeGenerator {
     if (payload.merchantCity != null) {
       parts.add(_tlv('60', payload.merchantCity!));
     }
+    if (payload.postalCode != null) {
+      parts.add(_tlv('61', payload.postalCode!));
+    }
 
     // Field 81: Merchant USSD Information (nested TLV)
     if (payload.merchantUssdInformation != null) {

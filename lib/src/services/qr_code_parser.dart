@@ -178,6 +178,7 @@ class QrCodeParser {
       countryCode: getRequired('58', 'Country Code'),
       merchantName: getRequired('59', 'Merchant Name'),
       merchantCity: data['60'], // Optional field
+      postalCode: data['61'], // Optional field
       merchantUssdInformation: merchantUssdInformation,
       qrTimestampInformation: qrTimestampInformation,
       additionalTemplates: additionalTemplates.isNotEmpty ? additionalTemplates : null,

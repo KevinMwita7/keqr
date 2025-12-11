@@ -22,6 +22,7 @@ void main() {
         countryCode: 'KE',
         merchantName: 'Awesome Merchant',
         merchantCity: 'Nairobi',
+        postalCode: '00100',
         merchantUssdInformation: MerchantUssdInformation(
           globallyUniqueIdentifier: 'com.testpsp.ussd',
           paymentNetworkSpecificData: {
@@ -69,6 +70,7 @@ void main() {
       expect(parsedPayload.countryCode, payload.countryCode);
       expect(parsedPayload.merchantName, payload.merchantName);
       expect(parsedPayload.merchantCity, payload.merchantCity);
+      expect(parsedPayload.postalCode, payload.postalCode);
 
       // Verify nested USSD information
       expect(parsedPayload.merchantUssdInformation?.globallyUniqueIdentifier,
