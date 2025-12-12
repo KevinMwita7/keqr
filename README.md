@@ -1,6 +1,6 @@
 # KenyaQuickResponse: A Dart KE-QR Code Library
 
-A pure Dart library for generating and parsing KE-QR codes, fully compliant with the **Kenya Quick Response Code Standard 2023** by the Central Bank of Kenya. This package provides an easy way to integrate KE-QR code functionality into your Dart and Flutter applications.
+A pure Dart library for generating and parsing KE-QR codes, fully compliant with the **Kenya Quick Response Code Standard 2023** by the Central Bank of Kenya.
 
 ## Features
 
