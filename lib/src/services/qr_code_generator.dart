@@ -25,7 +25,9 @@ class QrCodeGenerator {
 
       // Add globally unique identifier (sub-tag 00) if present
       if (merchantAccount.globallyUniqueIdentifier != null) {
-        merchantAccountParts.add(_tlv('00', merchantAccount.globallyUniqueIdentifier!));
+        merchantAccountParts.add(
+          _tlv('00', merchantAccount.globallyUniqueIdentifier!),
+        );
       }
 
       // Add payment network specific data (sub-tags 01 and beyond)
@@ -84,37 +86,59 @@ class QrCodeGenerator {
     if (payload.additionalData != null) {
       var additionalDataParts = <String>[];
       if (payload.additionalData!.billNumber != null) {
-        additionalDataParts.add(_tlv('01', payload.additionalData!.billNumber!));
+        additionalDataParts.add(
+          _tlv('01', payload.additionalData!.billNumber!),
+        );
       }
       if (payload.additionalData!.mobileNumber != null) {
-        additionalDataParts.add(_tlv('02', payload.additionalData!.mobileNumber!));
+        additionalDataParts.add(
+          _tlv('02', payload.additionalData!.mobileNumber!),
+        );
       }
       if (payload.additionalData!.storeLabel != null) {
-        additionalDataParts.add(_tlv('03', payload.additionalData!.storeLabel!));
+        additionalDataParts.add(
+          _tlv('03', payload.additionalData!.storeLabel!),
+        );
       }
       if (payload.additionalData!.loyaltyNumber != null) {
-        additionalDataParts.add(_tlv('04', payload.additionalData!.loyaltyNumber!));
+        additionalDataParts.add(
+          _tlv('04', payload.additionalData!.loyaltyNumber!),
+        );
       }
       if (payload.additionalData!.referenceLabel != null) {
-        additionalDataParts.add(_tlv('05', payload.additionalData!.referenceLabel!));
+        additionalDataParts.add(
+          _tlv('05', payload.additionalData!.referenceLabel!),
+        );
       }
       if (payload.additionalData!.customerLabel != null) {
-        additionalDataParts.add(_tlv('06', payload.additionalData!.customerLabel!));
+        additionalDataParts.add(
+          _tlv('06', payload.additionalData!.customerLabel!),
+        );
       }
       if (payload.additionalData!.terminalLabel != null) {
-        additionalDataParts.add(_tlv('07', payload.additionalData!.terminalLabel!));
+        additionalDataParts.add(
+          _tlv('07', payload.additionalData!.terminalLabel!),
+        );
       }
       if (payload.additionalData!.purposeOfTransaction != null) {
-        additionalDataParts.add(_tlv('08', payload.additionalData!.purposeOfTransaction!));
+        additionalDataParts.add(
+          _tlv('08', payload.additionalData!.purposeOfTransaction!),
+        );
       }
       if (payload.additionalData!.additionalConsumerDataRequest != null) {
-        additionalDataParts.add(_tlv('09', payload.additionalData!.additionalConsumerDataRequest!));
+        additionalDataParts.add(
+          _tlv('09', payload.additionalData!.additionalConsumerDataRequest!),
+        );
       }
       if (payload.additionalData!.merchantTaxId != null) {
-        additionalDataParts.add(_tlv('10', payload.additionalData!.merchantTaxId!));
+        additionalDataParts.add(
+          _tlv('10', payload.additionalData!.merchantTaxId!),
+        );
       }
       if (payload.additionalData!.merchantChannel != null) {
-        additionalDataParts.add(_tlv('11', payload.additionalData!.merchantChannel!));
+        additionalDataParts.add(
+          _tlv('11', payload.additionalData!.merchantChannel!),
+        );
       }
       parts.add(_tlv('62', additionalDataParts.join()));
     }
@@ -122,9 +146,18 @@ class QrCodeGenerator {
     // Field 64
     if (payload.merchantInformationLanguageTemplate != null) {
       var merchantInfoParts = <String>[];
-      merchantInfoParts.add(_tlv('00', payload.merchantInformationLanguageTemplate!.languagePreference));
-      merchantInfoParts.add(_tlv('01', payload.merchantInformationLanguageTemplate!.merchantName));
-      merchantInfoParts.add(_tlv('02', payload.merchantInformationLanguageTemplate!.merchantCity));
+      merchantInfoParts.add(
+        _tlv(
+          '00',
+          payload.merchantInformationLanguageTemplate!.languagePreference,
+        ),
+      );
+      merchantInfoParts.add(
+        _tlv('01', payload.merchantInformationLanguageTemplate!.merchantName),
+      );
+      merchantInfoParts.add(
+        _tlv('02', payload.merchantInformationLanguageTemplate!.merchantCity),
+      );
       parts.add(_tlv('64', merchantInfoParts.join()));
     }
 
@@ -147,10 +180,14 @@ class QrCodeGenerator {
         locationParts.add(_tlv('01', providerValue));
       }
       if (payload.merchantPremisesLocation!.locationData != null) {
-        locationParts.add(_tlv('02', payload.merchantPremisesLocation!.locationData!));
+        locationParts.add(
+          _tlv('02', payload.merchantPremisesLocation!.locationData!),
+        );
       }
       if (payload.merchantPremisesLocation!.locationAccuracy != null) {
-        locationParts.add(_tlv('03', payload.merchantPremisesLocation!.locationAccuracy!));
+        locationParts.add(
+          _tlv('03', payload.merchantPremisesLocation!.locationAccuracy!),
+        );
       }
       if (locationParts.isNotEmpty) {
         parts.add(_tlv('80', locationParts.join()));
@@ -161,9 +198,18 @@ class QrCodeGenerator {
     if (payload.merchantUssdInformation != null) {
       var ussdParts = <String>[];
       if (payload.merchantUssdInformation!.globallyUniqueIdentifier != null) {
-        ussdParts.add(_tlv('00', payload.merchantUssdInformation!.globallyUniqueIdentifier!));
+        ussdParts.add(
+          _tlv(
+            '00',
+            payload.merchantUssdInformation!.globallyUniqueIdentifier!,
+          ),
+        );
       }
-      for (var entry in payload.merchantUssdInformation!.paymentNetworkSpecificData.entries) {
+      for (var entry
+          in payload
+              .merchantUssdInformation!
+              .paymentNetworkSpecificData
+              .entries) {
         ussdParts.add(_tlv(entry.key, entry.value));
       }
       parts.add(_tlv('81', ussdParts.join()));
@@ -173,7 +219,9 @@ class QrCodeGenerator {
     if (payload.qrTimestampInformation != null) {
       var timestampParts = <String>[];
       if (payload.qrTimestampInformation!.globallyUniqueIdentifier != null) {
-        timestampParts.add(_tlv('00', payload.qrTimestampInformation!.globallyUniqueIdentifier!));
+        timestampParts.add(
+          _tlv('00', payload.qrTimestampInformation!.globallyUniqueIdentifier!),
+        );
       }
       for (var entry in payload.qrTimestampInformation!.timestampData.entries) {
         timestampParts.add(_tlv(entry.key, entry.value));

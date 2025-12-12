@@ -39,7 +39,8 @@ class KenyaQuickResponsePayload {
   final List<TemplateInformation>? additionalTemplates;
 
   final AdditionalData? additionalData;
-  final MerchantInformationLanguageTemplate? merchantInformationLanguageTemplate;
+  final MerchantInformationLanguageTemplate?
+  merchantInformationLanguageTemplate;
   final MerchantPremisesLocation? merchantPremisesLocation;
   final String? crc;
 

@@ -13,7 +13,8 @@ import '../models/tip_or_convenience_indicator.dart';
 class QrCodeParser {
   static KenyaQuickResponsePayload parse(String qrCode) {
     // Check for minimum length (e.g., Payload Format Indicator + CRC)
-    if (qrCode.length < 12) { // 000201 + 6304XXXX
+    if (qrCode.length < 12) {
+      // 000201 + 6304XXXX
       throw ArgumentError('QR code string is too short to be valid.');
     }
 
@@ -26,12 +27,18 @@ class QrCodeParser {
 
     final crcValue = crcData.substring(4);
 
-    var calculatedCrc = Crc16CcittFalse().convert(utf8.encode('${payloadWithoutCrc}6304'));
-    var calculatedCrcString =
-        calculatedCrc.toRadixString(16).toUpperCase().padLeft(4, '0');
+    var calculatedCrc = Crc16CcittFalse().convert(
+      utf8.encode('${payloadWithoutCrc}6304'),
+    );
+    var calculatedCrcString = calculatedCrc
+        .toRadixString(16)
+        .toUpperCase()
+        .padLeft(4, '0');
 
     if (calculatedCrcString != crcValue) {
-      throw ArgumentError('CRC mismatch: Expected $calculatedCrcString, got $crcValue');
+      throw ArgumentError(
+        'CRC mismatch: Expected $calculatedCrcString, got $crcValue',
+      );
     }
 
     var data = _parseTlv(payloadWithoutCrc);
@@ -46,7 +53,8 @@ class QrCodeParser {
     }
 
     // Check if this is an M-Pesa QR code
-    bool isMpesaQr = data.containsKey('83') && data['83']!.contains('m-pesa.com');
+    bool isMpesaQr =
+        data.containsKey('83') && data['83']!.contains('m-pesa.com');
 
     // Parse Merchant Account Information (Fields 02-51)
     // According to KE-QR Standard Table 7.3, at least one MUST be present
@@ -59,7 +67,8 @@ class QrCodeParser {
           MerchantAccountInformation(
             fieldId: fieldId,
             globallyUniqueIdentifier: merchantAccountData['00'],
-            paymentNetworkSpecificData: Map.from(merchantAccountData)..remove('00'),
+            paymentNetworkSpecificData: Map.from(merchantAccountData)
+              ..remove('00'),
           ),
         );
       }
@@ -76,13 +85,16 @@ class QrCodeParser {
     if (data.containsKey('55')) {
       switch (data['55']) {
         case '01':
-          tipOrConvenienceIndicator = TipOrConvenienceIndicator.promptToEnterTip;
+          tipOrConvenienceIndicator =
+              TipOrConvenienceIndicator.promptToEnterTip;
           break;
         case '02':
-          tipOrConvenienceIndicator = TipOrConvenienceIndicator.fixedConvenienceFee;
+          tipOrConvenienceIndicator =
+              TipOrConvenienceIndicator.fixedConvenienceFee;
           break;
         case '03':
-          tipOrConvenienceIndicator = TipOrConvenienceIndicator.percentageConvenienceFee;
+          tipOrConvenienceIndicator =
+              TipOrConvenienceIndicator.percentageConvenienceFee;
           break;
       }
     }
@@ -110,13 +122,20 @@ class QrCodeParser {
       var merchantInfoMap = _parseTlv(data['64']!);
       // Create a local helper function for getRequired on merchantInfoMap
       String getRequiredMerchantInfo(String tag, String fieldName) {
-        if (!merchantInfoMap.containsKey(tag) || merchantInfoMap[tag]!.isEmpty) {
-          throw ArgumentError('Missing or empty $fieldName (Tag $tag) in Merchant Information Language Template.');
+        if (!merchantInfoMap.containsKey(tag) ||
+            merchantInfoMap[tag]!.isEmpty) {
+          throw ArgumentError(
+            'Missing or empty $fieldName (Tag $tag) in Merchant Information Language Template.',
+          );
         }
         return merchantInfoMap[tag]!;
       }
+
       merchantInformationLanguageTemplate = MerchantInformationLanguageTemplate(
-        languagePreference: getRequiredMerchantInfo('00', 'Language Preference'),
+        languagePreference: getRequiredMerchantInfo(
+          '00',
+          'Language Preference',
+        ),
         merchantName: getRequiredMerchantInfo('01', 'Merchant Name'),
         merchantCity: getRequiredMerchantInfo('02', 'Merchant City'),
       );
@@ -202,7 +221,9 @@ class QrCodeParser {
       postalCode: data['61'], // Optional field
       merchantUssdInformation: merchantUssdInformation,
       qrTimestampInformation: qrTimestampInformation,
-      additionalTemplates: additionalTemplates.isNotEmpty ? additionalTemplates : null,
+      additionalTemplates: additionalTemplates.isNotEmpty
+          ? additionalTemplates
+          : null,
       additionalData: additionalData,
       merchantInformationLanguageTemplate: merchantInformationLanguageTemplate,
       merchantPremisesLocation: merchantPremisesLocation,
@@ -215,7 +236,9 @@ class QrCodeParser {
     var i = 0;
     while (i < data.length) {
       if (i + 4 > data.length) {
-        throw ArgumentError('Malformed TLV string: Not enough characters for tag and length at index $i.');
+        throw ArgumentError(
+          'Malformed TLV string: Not enough characters for tag and length at index $i.',
+        );
       }
       var tag = data.substring(i, i + 2);
       var lengthStr = data.substring(i + 2, i + 4);
@@ -223,11 +246,15 @@ class QrCodeParser {
       try {
         length = int.parse(lengthStr);
       } catch (e) {
-        throw ArgumentError('Malformed TLV string: Invalid length "$lengthStr" for tag "$tag" at index $i.');
+        throw ArgumentError(
+          'Malformed TLV string: Invalid length "$lengthStr" for tag "$tag" at index $i.',
+        );
       }
 
       if (i + 4 + length > data.length) {
-        throw ArgumentError('Malformed TLV string: Declared length $length for tag $tag exceeds available data at index $i. (Remaining: ${data.substring(i)})');
+        throw ArgumentError(
+          'Malformed TLV string: Declared length $length for tag $tag exceeds available data at index $i. (Remaining: ${data.substring(i)})',
+        );
       }
       var value = data.substring(i + 4, i + 4 + length);
       map[tag] = value;

@@ -1,8 +1,4 @@
-enum LocationDataProvider {
-  gpsCoordinates,
-  what3words,
-  googlePlusCodes,
-}
+enum LocationDataProvider { gpsCoordinates, what3words, googlePlusCodes }
 
 class MerchantPremisesLocation {
   final LocationDataProvider? locationDataProvider;

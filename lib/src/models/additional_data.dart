@@ -69,9 +69,7 @@ class AdditionalData {
         );
       }
       if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(merchantTaxId!)) {
-        throw ArgumentError(
-          'merchantTaxId must be alphanumeric',
-        );
+        throw ArgumentError('merchantTaxId must be alphanumeric');
       }
     }
 
@@ -83,9 +81,7 @@ class AdditionalData {
         );
       }
       if (!RegExp(r'^[0-9]{3}$').hasMatch(merchantChannel!)) {
-        throw ArgumentError(
-          'merchantChannel must be 3 numeric digits',
-        );
+        throw ArgumentError('merchantChannel must be 3 numeric digits');
       }
 
       // Validate individual positions

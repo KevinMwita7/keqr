@@ -11,11 +11,15 @@ void main() {
   try {
     var parsedPayload = QrCodeParser.parse(testQr);
     print('\nSuccessfully parsed QR Code String:');
-    print('  Payload Format Indicator: ${parsedPayload.payloadFormatIndicator}');
     print(
-        '  Point of Initiation Method: ${parsedPayload.pointOfInitiationMethod}');
+      '  Payload Format Indicator: ${parsedPayload.payloadFormatIndicator}',
+    );
     print(
-        '  Merchant Category Code: ${parsedPayload.merchantCategoryCode ?? "N/A"}');
+      '  Point of Initiation Method: ${parsedPayload.pointOfInitiationMethod}',
+    );
+    print(
+      '  Merchant Category Code: ${parsedPayload.merchantCategoryCode ?? "N/A"}',
+    );
     print('  Transaction Currency: ${parsedPayload.transactionCurrency}');
     print('  Transaction Amount: ${parsedPayload.transactionAmount ?? "N/A"}');
     print('  Country Code: ${parsedPayload.countryCode}');
@@ -25,14 +29,20 @@ void main() {
     // Print Merchant Account Information
     if (parsedPayload.merchantAccountInformation.isNotEmpty) {
       print('  Merchant Account Information:');
-      for (var i = 0; i < parsedPayload.merchantAccountInformation.length; i++) {
+      for (
+        var i = 0;
+        i < parsedPayload.merchantAccountInformation.length;
+        i++
+      ) {
         var account = parsedPayload.merchantAccountInformation[i];
         print('    [${i + 1}] Field ID: ${account.fieldId}');
         print(
-            '        Globally Unique ID: ${account.globallyUniqueIdentifier ?? "N/A"}');
+          '        Globally Unique ID: ${account.globallyUniqueIdentifier ?? "N/A"}',
+        );
         if (account.paymentNetworkSpecificData.isNotEmpty) {
           print(
-              '        Payment Network Data: ${account.paymentNetworkSpecificData}');
+            '        Payment Network Data: ${account.paymentNetworkSpecificData}',
+          );
         }
         if (account.isPspAccount) {
           print('        Type: PSP Merchant Account');
@@ -46,18 +56,22 @@ void main() {
     if (parsedPayload.merchantUssdInformation != null) {
       print('  Merchant USSD Information:');
       print(
-          '    Globally Unique ID: ${parsedPayload.merchantUssdInformation!.globallyUniqueIdentifier ?? "N/A"}');
+        '    Globally Unique ID: ${parsedPayload.merchantUssdInformation!.globallyUniqueIdentifier ?? "N/A"}',
+      );
       print(
-          '    Payment Network Data: ${parsedPayload.merchantUssdInformation!.paymentNetworkSpecificData}');
+        '    Payment Network Data: ${parsedPayload.merchantUssdInformation!.paymentNetworkSpecificData}',
+      );
     }
 
     // Print QR Timestamp Information (nested)
     if (parsedPayload.qrTimestampInformation != null) {
       print('  QR Timestamp Information:');
       print(
-          '    Globally Unique ID: ${parsedPayload.qrTimestampInformation!.globallyUniqueIdentifier ?? "N/A"}');
+        '    Globally Unique ID: ${parsedPayload.qrTimestampInformation!.globallyUniqueIdentifier ?? "N/A"}',
+      );
       print(
-          '    Timestamp Data: ${parsedPayload.qrTimestampInformation!.timestampData}');
+        '    Timestamp Data: ${parsedPayload.qrTimestampInformation!.timestampData}',
+      );
     }
 
     // Print Additional Templates (nested)
@@ -68,7 +82,8 @@ void main() {
         var template = parsedPayload.additionalTemplates![i];
         print('    [${i + 1}] Field ID: ${template.fieldId}');
         print(
-            '        Globally Unique ID: ${template.globallyUniqueIdentifier ?? "N/A"}');
+          '        Globally Unique ID: ${template.globallyUniqueIdentifier ?? "N/A"}',
+        );
         print('        Template Data: ${template.templateData}');
       }
     }
@@ -76,22 +91,29 @@ void main() {
     if (parsedPayload.additionalData != null) {
       print('  Additional Data:');
       print(
-          '    Bill Number: ${parsedPayload.additionalData?.billNumber ?? "N/A"}');
+        '    Bill Number: ${parsedPayload.additionalData?.billNumber ?? "N/A"}',
+      );
       print(
-          '    Purpose of Transaction: ${parsedPayload.additionalData?.purposeOfTransaction ?? "N/A"}');
+        '    Purpose of Transaction: ${parsedPayload.additionalData?.purposeOfTransaction ?? "N/A"}',
+      );
       print(
-          '    Merchant Tax ID: ${parsedPayload.additionalData?.merchantTaxId ?? "N/A"}');
+        '    Merchant Tax ID: ${parsedPayload.additionalData?.merchantTaxId ?? "N/A"}',
+      );
       print(
-          '    Merchant Channel: ${parsedPayload.additionalData?.merchantChannel ?? "N/A"}');
+        '    Merchant Channel: ${parsedPayload.additionalData?.merchantChannel ?? "N/A"}',
+      );
     }
     if (parsedPayload.merchantInformationLanguageTemplate != null) {
       print('  Merchant Information Language Template:');
       print(
-          '    Language Preference: ${parsedPayload.merchantInformationLanguageTemplate?.languagePreference ?? "N/A"}');
+        '    Language Preference: ${parsedPayload.merchantInformationLanguageTemplate?.languagePreference ?? "N/A"}',
+      );
       print(
-          '    Merchant Name: ${parsedPayload.merchantInformationLanguageTemplate?.merchantName ?? "N/A"}');
+        '    Merchant Name: ${parsedPayload.merchantInformationLanguageTemplate?.merchantName ?? "N/A"}',
+      );
       print(
-          '    Merchant City: ${parsedPayload.merchantInformationLanguageTemplate?.merchantCity ?? "N/A"}');
+        '    Merchant City: ${parsedPayload.merchantInformationLanguageTemplate?.merchantCity ?? "N/A"}',
+      );
     }
     print('  CRC: ${parsedPayload.crc}');
   } catch (e) {
@@ -108,16 +130,15 @@ void main() {
         fieldId: '28', // PSP merchant account identifier
         globallyUniqueIdentifier: 'ke.go.qr',
         paymentNetworkSpecificData: {
-          '01': '1234567', // Payment network specific merchant ID. Must be a valid till/phone number
+          '01':
+              '1234567', // Payment network specific merchant ID. Must be a valid till/phone number
         },
-      )
+      ),
     ],
     merchantCity: 'Nairobi',
     merchantUssdInformation: MerchantUssdInformation(
       globallyUniqueIdentifier: 'ke.go.qr',
-      paymentNetworkSpecificData: {
-        '00': '*123#'
-      }
+      paymentNetworkSpecificData: {'00': '*123#'},
     ),
     transactionAmount: '100.00',
     merchantCategoryCode: '0000', // Transportation (Optional now)
@@ -127,9 +148,7 @@ void main() {
     postalCode: '00',
     qrTimestampInformation: QrTimestampInformation(
       globallyUniqueIdentifier: 'ke.go.qr',
-      timestampData: {
-        '01': '2025-12-11T12:56:36',
-      },
+      timestampData: {'01': '2025-12-11T12:56:36'},
     ),
     // M-PESA doesn't support the merchant premise location. In case it's needed later, include it here
     /*merchantPremisesLocation: MerchantPremisesLocation(
@@ -150,8 +169,12 @@ void main() {
       ),
     ),
     additionalTemplates: [
-      TemplateInformation(fieldId: '83', templateData: {'01': '02', '03': '00002', '04': '00000'}, globallyUniqueIdentifier: 'm-pesa.com')
-    ]
+      TemplateInformation(
+        fieldId: '83',
+        templateData: {'01': '02', '03': '00002', '04': '00000'},
+        globallyUniqueIdentifier: 'm-pesa.com',
+      ),
+    ],
   );
 
   try {
@@ -167,16 +190,20 @@ void main() {
     if (parsedGeneratedPayload.merchantUssdInformation != null) {
       print('  Merchant USSD Information:');
       print(
-          '    Globally Unique ID: ${parsedGeneratedPayload.merchantUssdInformation!.globallyUniqueIdentifier}');
+        '    Globally Unique ID: ${parsedGeneratedPayload.merchantUssdInformation!.globallyUniqueIdentifier}',
+      );
       print(
-          '    USSD Code: ${parsedGeneratedPayload.merchantUssdInformation!.paymentNetworkSpecificData['01']}');
+        '    USSD Code: ${parsedGeneratedPayload.merchantUssdInformation!.paymentNetworkSpecificData['01']}',
+      );
     }
     if (parsedGeneratedPayload.qrTimestampInformation != null) {
       print('  QR Timestamp Information:');
       print(
-          '    Globally Unique ID: ${parsedGeneratedPayload.qrTimestampInformation!.globallyUniqueIdentifier}');
+        '    Globally Unique ID: ${parsedGeneratedPayload.qrTimestampInformation!.globallyUniqueIdentifier}',
+      );
       print(
-          '    Timestamp: ${parsedGeneratedPayload.qrTimestampInformation!.timestampData['01']}');
+        '    Timestamp: ${parsedGeneratedPayload.qrTimestampInformation!.timestampData['01']}',
+      );
     }
   } catch (e) {
     print('\nError generating or parsing generated QR code: $e');
