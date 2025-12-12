@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:crclib/catalog.dart';
-import '../models/keqr_payload.dart';
+import '../models/kenya_quick_response_payload.dart';
 import '../models/merchant_premises_location.dart';
 import '../models/tip_or_convenience_indicator.dart';
 
 class QrCodeGenerator {
-  static String generate(KeqrPayload payload) {
+  static String generate(KenyaQuickResponsePayload payload) {
     var parts = <String>[];
 
     // Mandatory fields

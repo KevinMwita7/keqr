@@ -7,7 +7,7 @@ import 'qr_timestamp_information.dart';
 import 'template_information.dart';
 import 'tip_or_convenience_indicator.dart';
 
-class KeqrPayload {
+class KenyaQuickResponsePayload {
   final String payloadFormatIndicator;
   final String pointOfInitiationMethod;
 
@@ -43,7 +43,7 @@ class KeqrPayload {
   final MerchantPremisesLocation? merchantPremisesLocation;
   final String? crc;
 
-  KeqrPayload({
+  KenyaQuickResponsePayload({
     required this.payloadFormatIndicator,
     required this.pointOfInitiationMethod,
     required this.merchantAccountInformation,

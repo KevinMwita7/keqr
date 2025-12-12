@@ -1,11 +1,11 @@
-# Keqr: A Dart KE-QR Code Library
+# KenyaQuickResponse: A Dart KE-QR Code Library
 
 A pure Dart library for generating and parsing KE-QR codes, fully compliant with the **Kenya Quick Response Code Standard 2023** by the Central Bank of Kenya. This package provides an easy way to integrate KE-QR code functionality into your Dart and Flutter applications.
 
 ## Features
 
--   **Generate KE-QR Codes**: Create QR code strings from a `KeqrPayload` object with all necessary fields.
--   **Parse KE-QR Codes**: Parse a QR code string back into a structured `KeqrPayload` object.
+-   **Generate KE-QR Codes**: Create QR code strings from a `KenyaQuickResponse` object with all necessary fields.
+-   **Parse KE-QR Codes**: Parse a QR code string back into a structured `KenyaQuickResponse` object.
 -   **Standard Compliant**: Follows the official specification for all fields, including:
     -   Merchant Account Information
     -   Transaction Details
@@ -27,20 +27,20 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  keqr: ^1.0.0 # Replace with the latest version
+  kenya_quick_response: ^1.0.0 # Replace with the latest version
 ```
 
 Then, import the library:
 
 ```dart
-import 'package:keqr/keqr.dart';
+import 'package:kenya_quick_response/kenya_quick_response.dart';
 ```
 
 ### Generating a QR Code
 
 ```dart
 void main() {
-  final payload = KeqrPayload(
+  final payload = KenyaQuickResponse(
     // ... populate your payload data
   );
 

@@ -1,10 +1,10 @@
-import 'package:keqr/keqr.dart';
+import 'package:kenya_quick_response/kenya_quick_response.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('QR Code Generation and Parsing', () {
     test('Round-trip test', () {
-      final payload = KeqrPayload(
+      final payload = KenyaQuickResponsePayload(
         payloadFormatIndicator: '01',
         pointOfInitiationMethod: '12',
         merchantAccountInformation: [
@@ -107,7 +107,7 @@ void main() {
     });
 
     test('Round-trip test with merchantTaxId and merchantChannel', () {
-      final payload = KeqrPayload(
+      final payload = KenyaQuickResponsePayload(
         payloadFormatIndicator: '01',
         pointOfInitiationMethod: '12',
         merchantAccountInformation: [

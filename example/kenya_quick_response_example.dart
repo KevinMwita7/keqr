@@ -1,4 +1,4 @@
-import 'package:keqr/keqr.dart';
+import 'package:kenya_quick_response/kenya_quick_response.dart';
 
 void main() {
   // The following testQr string has been sanitized to remove PII.
@@ -100,7 +100,7 @@ void main() {
 
   print('\n--- Attempting to generate a new QR code string ---');
   // Create a KeqrPayload object for generation
-  var payloadToGenerate = KeqrPayload(
+  var payloadToGenerate = KenyaQuickResponsePayload(
     payloadFormatIndicator: '01',
     pointOfInitiationMethod: '12', // '11' for static, '12' for dynamic
     merchantAccountInformation: [
@@ -108,7 +108,7 @@ void main() {
         fieldId: '28', // PSP merchant account identifier
         globallyUniqueIdentifier: 'ke.go.qr',
         paymentNetworkSpecificData: {
-          '01': '4449562', // Payment network specific merchant ID. Must be a valid till/phone number
+          '01': '1234567', // Payment network specific merchant ID. Must be a valid till/phone number
         },
       )
     ],

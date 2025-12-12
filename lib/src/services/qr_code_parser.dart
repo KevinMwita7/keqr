@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:crclib/catalog.dart';
 import '../models/additional_data.dart';
-import '../models/keqr_payload.dart';
+import '../models/kenya_quick_response_payload.dart';
 import '../models/merchant_account_information.dart';
 import '../models/merchant_information_language_template.dart';
 import '../models/merchant_premises_location.dart';
@@ -11,7 +11,7 @@ import '../models/template_information.dart';
 import '../models/tip_or_convenience_indicator.dart';
 
 class QrCodeParser {
-  static KeqrPayload parse(String qrCode) {
+  static KenyaQuickResponsePayload parse(String qrCode) {
     // Check for minimum length (e.g., Payload Format Indicator + CRC)
     if (qrCode.length < 12) { // 000201 + 6304XXXX
       throw ArgumentError('QR code string is too short to be valid.');
@@ -186,7 +186,7 @@ class QrCodeParser {
       }
     }
 
-    return KeqrPayload(
+    return KenyaQuickResponsePayload(
       payloadFormatIndicator: getRequired('00', 'Payload Format Indicator'),
       pointOfInitiationMethod: getRequired('01', 'Point of Initiation Method'),
       merchantAccountInformation: merchantAccountInformation,

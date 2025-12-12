@@ -1,6 +1,6 @@
 library;
 
-export 'src/models/keqr_payload.dart';
+export 'src/models/kenya_quick_response_payload.dart';
 export 'src/models/additional_data.dart';
 export 'src/models/merchant_account_information.dart';
 export 'src/models/merchant_information_language_template.dart';
